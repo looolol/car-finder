@@ -1,0 +1,80 @@
+<h2>Search Results:</h2>
+<hr>
+
+<div>
+  @if (!locationError) {
+<!--    <p>Latitude: {{latitude}}</p>-->
+<!--    <p>Longitude: {{longitude}}</p>-->
+  }
+  @else {
+    <p>LocationError {{locationError | json}}</p>
+  }
+</div>
+<br/><br/>
+
+<div class="searchForm">
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>Car Make</mat-label>
+      <input matInput formControlName="make">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Car Model</mat-label>
+      <input matInput formControlName="model">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Body Style</mat-label>
+      <input matInput formControlName="body_style">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Car Color</mat-label>
+      <input matInput formControlName="color">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Min Year</mat-label>
+      <input matInput type="number" formControlName="year_min">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Max Mileage</mat-label>
+      <input matInput type="number" formControlName="mileage">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Search Radius</mat-label>
+      <input matInput type="number" formControlName="radius">
+    </mat-form-field>
+
+    <mat-label>Price Range</mat-label>
+    <mat-slider min="0" max="99999" thumbLabel discrete [displayWith]="formatLabel">
+      <input value="0" matSliderStartThumb formControlName="price_min">
+      <input value="200000" matSliderEndThumb formControlName="price_max">
+    </mat-slider>
+
+    <br/>
+    <button mat-raised-button type="button" (click)="clearSearchForm($event)">Clear</button>
+    <button mat-raised-button type="submit" color="primary">Search</button>
+  </form>
+</div>
+
+<div class="searchResults">
+@if(isLoading) {
+  <p>Loading...</p>
+}
+@else {
+  @if(cars && cars.length > 0) {
+    <ul>
+      <li *ngFor="let car of cars">
+        <app-car [car]="car"></app-car>
+      </li>
+    </ul>
+  }
+  @else if(isLoading !== undefined) {
+    <p>No Results :(</p>
+  }
+}
+</div>

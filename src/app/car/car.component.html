@@ -1,0 +1,17 @@
+<div class="carListing">
+  <p>Vin: {{car.vin}}</p>
+  <p>Make: {{car.make}}</p>
+  <p>Model: {{car.model}}</p>
+  <p>Year: {{car.year}}</p>
+  <p>Body Style: {{car.bodyStyle}}</p>
+  <p>Color: {{car.displayColor}}</p>
+  <p>Mileage: {{car.mileageHumanized}}</p>
+  <p>Dealer: {{car.dealerName}}</p>
+  <p>Location: {{car.city}}, {{car.state}}</p>
+  <p>Distance: {{car.distanceFromOrigin}}</p>
+  <p><strong><u style="color: red;">{{car.price}}</u></strong></p>
+  @if (car.thumbnailUrl) {
+    <img [src]="car.thumbnailUrl" alt="{{car.year}}-{{car.make}}-{{car.model}}">
+  }
+</div>
+<br>
