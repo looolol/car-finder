@@ -7,6 +7,11 @@ import {AutoDevApiCar} from "../models/auto-dev.api-car.model";
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 
 
+interface SortOption {
+  value: string;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-search',
   standalone: true,
@@ -27,6 +32,19 @@ export class SearchComponent implements OnInit {
   searchForm: FormGroup;
   minPrice = 0;
   maxPrice = 99999;
+  sortOptions = [
+    { value: "", viewValue: "Best" },
+    { value: "price:asc", viewValue: "Least Expensive" },
+    { value: "price:desc", viewValue: "Most Expensive" },
+    { value: "distance:asc", viewValue: "Nearest" },
+    { value: "distance:desc", viewValue: "Farthest" },
+    { value: "year:asc", viewValue: "Oldest" },
+    { value: "year:desc", viewValue: "Newest" },
+    { value: "mileage:asc", viewValue: "Least Miles" },
+    { value: "mileage:desc", viewValue: "Most Miles" },
+    { value: "created_at:asc", viewValue: "Newest Listings" },
+    { value: "created_at:desc", viewValue: "Oldest Listings" },
+  ];
   isLoading: boolean | undefined;
 
 
@@ -47,6 +65,7 @@ export class SearchComponent implements OnInit {
       year_min: new FormControl(2016),
       mileage: new FormControl(40000),
       radius: new FormControl(50),
+      sort_filter: new FormControl(""),
     });
 
     this.searchForm = this.fb.group({
@@ -59,6 +78,7 @@ export class SearchComponent implements OnInit {
       year_min: new FormControl(null),
       mileage: new FormControl(null),
       radius: new FormControl(null),
+      sort_filter: new FormControl(""),
     });
 
     //this.searchForm = testForm;
@@ -90,8 +110,9 @@ export class SearchComponent implements OnInit {
 
   clearSearchForm($event: MouseEvent) {
     this.searchForm.reset();
-    this.searchForm.get('price_min')?.setValue(this.minPrice)
-    this.searchForm.get('price_max')?.setValue(this.maxPrice)
+    this.searchForm.get('price_min')?.setValue(this.minPrice);
+    this.searchForm.get('price_max')?.setValue(this.maxPrice);
+    this.searchForm.get('sort_filter')?.setValue("");
     this.cars = undefined;
     this.isLoading = undefined;
   }
