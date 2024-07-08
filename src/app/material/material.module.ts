@@ -3,6 +3,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
+import {MatSelectModule} from "@angular/material/select";
 
 
 const ngModules = [
@@ -10,6 +11,7 @@ const ngModules = [
   MatButtonModule,
   MatSliderModule,
   MatCardModule,
+  MatSelectModule,
 ];
 
 @NgModule({
