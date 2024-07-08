@@ -93,6 +93,7 @@ export class SearchComponent implements OnInit {
     this.searchForm.get('price_min')?.setValue(this.minPrice)
     this.searchForm.get('price_max')?.setValue(this.maxPrice)
     this.cars = undefined;
+    this.isLoading = undefined;
   }
 
   formatLabel(value: number): string {

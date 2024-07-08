@@ -3,14 +3,15 @@ import {map, Observable, tap} from "rxjs";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AutoDevApiResponse} from "../models/auto-dev.api-response.model";
 import {AutoDevApiCar} from "../models/auto-dev.api-car.model";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CarService {
 
-  readonly base_url: string = "https://auto.dev/api/listings";
-  auth_token: string = "ZrQEPSkKcm9iYmllcmFua2luMTVAZ21haWwuY29t";
+  readonly base_url: string = environment.autoDevApiUrl;
+  auth_token: string = environment.autoDevApiKey;
 
   constructor(private http: HttpClient) { }
 

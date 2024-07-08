@@ -61,20 +61,18 @@
   </form>
 </div>
 
+<br/><br/>
+
 <div class="searchResults">
 @if(isLoading) {
   <p>Loading...</p>
 }
-@else {
-  @if(cars && cars.length > 0) {
-    <ul>
-      <li *ngFor="let car of cars">
-        <app-car [car]="car"></app-car>
-      </li>
-    </ul>
-  }
-  @else if(isLoading !== undefined) {
-    <p>No Results :(</p>
-  }
+@else if(isLoading !== undefined) {
+    @for (car of cars; track car) {
+      <app-car [car]="car"></app-car>
+    }
+    @empty {
+      <p>No Results :(</p>
+    }
 }
 </div>
