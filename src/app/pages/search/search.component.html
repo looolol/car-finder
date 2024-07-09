@@ -1,0 +1,20 @@
+<h2>Search Results:</h2>
+<hr>
+
+<app-search-form [isLoading]="isLoading" (submitEvent)="search($event)" (clearEvent)="clear()"></app-search-form>
+
+<br/><br/>
+
+<div class="searchResults">
+  @if (isLoading) {
+  <p>Loading...</p>
+  }
+  @else if (cars !== undefined) {
+    @for (car of cars; track car) {
+      <app-car [car]="car"></app-car>
+    }
+    @empty {
+      <p>No Results :(</p>
+    }
+  }
+</div>

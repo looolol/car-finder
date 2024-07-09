@@ -1,42 +1,31 @@
-import {Component, OnInit} from '@angular/core';
-import {CommonModule} from "@angular/common";
-import {MaterialModule} from "../material/material.module";
-import {CarService} from "../services/car.service";
-import {CarComponent} from "../car/car.component";
-import {AutoDevApiCar} from "../models/auto-dev.api-car.model";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
-
+import {MaterialModule} from "../../material/material.module";
 
 @Component({
-  selector: 'app-search',
+  selector: 'app-search-form',
   standalone: true,
   imports: [
-    CommonModule,
     MaterialModule,
     ReactiveFormsModule,
-    CarComponent,
   ],
-  providers: [
-    CarService,
-  ],
-  templateUrl: './search.component.html',
-  styleUrl: './search.component.scss'
+  templateUrl: './search-form.component.html',
+  styleUrl: './search-form.component.scss'
 })
-export class SearchComponent implements OnInit {
-
+export class SearchFormComponent implements OnInit {
   searchForm: FormGroup;
+  @Input() isLoading: boolean = false;
+  @Output() submitEvent = new EventEmitter();
+  @Output() clearEvent = new EventEmitter();
+
   minPrice = 0;
   maxPrice = 99999;
-  isLoading: boolean | undefined;
-
-
-  cars?: AutoDevApiCar[];
 
   latitude?: number;
   longitude?: number;
   locationError: GeolocationPositionError | undefined;
 
-  constructor(private carService: CarService, private fb: FormBuilder) {
+  constructor(private fb: FormBuilder) {
     const testForm = this.fb.group({
       make: new FormControl("Chevrolet"),
       model: new FormControl("Camaro"),
@@ -68,6 +57,21 @@ export class SearchComponent implements OnInit {
     this.getLocation();
   }
 
+  getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+          if (position) {
+            this.latitude = position.coords.latitude;
+            this.longitude = position.coords.longitude;
+            this.locationError = undefined;
+          }
+        },
+        (error) => this.locationError = error);
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
+
   onSubmit() {
     this.isLoading = true;
 
@@ -79,42 +83,20 @@ export class SearchComponent implements OnInit {
       }
     })
 
-    console.log('Searching with params:', searchParams);
-
-    this.carService.getCars(searchParams).subscribe(cars => {
-      console.log('Filtered Search Results:', cars);
-      this.cars = cars;
-      this.isLoading = false;
-    })
+    this.submitEvent.emit(searchParams);
   }
 
-  clearSearchForm($event: MouseEvent) {
+  clearSearchForm() {
     this.searchForm.reset();
     this.searchForm.get('price_min')?.setValue(this.minPrice)
     this.searchForm.get('price_max')?.setValue(this.maxPrice)
-    this.cars = undefined;
-    this.isLoading = undefined;
+
+    this.clearEvent.emit();
   }
 
   formatLabel(value: number): string {
-      return Math.round(value / 1000) + 'k';
+    return Math.round(value / 1000) + 'k';
 
     return `${value}`;
   }
-
-  getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        if (position) {
-          this.latitude = position.coords.latitude;
-          this.longitude = position.coords.longitude;
-          this.locationError = undefined;
-        }
-      },
-      (error) => this.locationError = error);
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  }
-
 }
