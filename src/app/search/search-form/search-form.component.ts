@@ -1,6 +1,12 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {MaterialModule} from "../../material/material.module";
+import {autoDevSortOptions} from "../../models/auto-dev.request.model";
+
+interface SortOption {
+  value: string;
+  viewValue: string;
+}
 
 @Component({
   selector: 'app-search-form',
@@ -21,23 +27,13 @@ export class SearchFormComponent implements OnInit {
   minPrice = 0;
   maxPrice = 99999;
 
+  sortOptions = autoDevSortOptions;
+
   latitude?: number;
   longitude?: number;
   locationError: GeolocationPositionError | undefined;
 
   constructor(private fb: FormBuilder) {
-    const testForm = this.fb.group({
-      make: new FormControl("Chevrolet"),
-      model: new FormControl("Camaro"),
-      color: new FormControl("yellow"),
-      body_style: new FormControl(""),
-      price_min: new FormControl(0),
-      price_max: new FormControl(40000),
-      year_min: new FormControl(2016),
-      mileage: new FormControl(40000),
-      radius: new FormControl(50),
-    });
-
     this.searchForm = this.fb.group({
       make: new FormControl(""),
       model: new FormControl(""),
@@ -48,9 +44,8 @@ export class SearchFormComponent implements OnInit {
       year_min: new FormControl(null),
       mileage: new FormControl(null),
       radius: new FormControl(null),
+      sort_filter: new FormControl(""),
     });
-
-    //this.searchForm = testForm;
   }
 
   ngOnInit() {
@@ -88,8 +83,10 @@ export class SearchFormComponent implements OnInit {
 
   clearSearchForm() {
     this.searchForm.reset();
+
     this.searchForm.get('price_min')?.setValue(this.minPrice)
     this.searchForm.get('price_max')?.setValue(this.maxPrice)
+    this.searchForm.get('sort_filter')?.setValue("");
 
     this.clearEvent.emit();
   }
