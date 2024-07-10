@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import {map, Observable, tap} from "rxjs";
+import {Observable, tap} from "rxjs";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AutoDevApiResponse} from "../models/auto-dev.api-response.model";
-import {AutoDevApiCar} from "../models/auto-dev.api-car.model";
 import {environment} from "../../environments/environment";
 
 @Injectable({
@@ -14,7 +13,7 @@ export class CarService {
 
   constructor(private http: HttpClient) { }
 
-  getCars(searchParams: any): Observable<AutoDevApiCar[]> {
+  getCars(searchParams: any): Observable<AutoDevApiResponse> {
     let params = new HttpParams();
 
     for (const key in searchParams) {
@@ -29,8 +28,7 @@ export class CarService {
 
     return this.http.get<AutoDevApiResponse>(this.base_url, { params })
       .pipe(
-        tap(data => console.log('Received data: ', data)),
-        map(response => response.records)
+        tap(data => console.log('Received data: ', data))
       );
   }
 
