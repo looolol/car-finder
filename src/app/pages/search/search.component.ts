@@ -1,11 +1,12 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {CommonModule} from "@angular/common";
 import {CarService} from "../../services/car.service";
 import {CarComponent} from "../../car/car.component";
 import {AutoDevApiCar} from "../../models/auto-dev.api-car.model";
 import {MaterialModule} from "../../material/material.module";
-import {PageEvent} from "@angular/material/paginator";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {SearchFormComponent} from "../../search-form/search-form.component";
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 
 
 @Component({
@@ -16,6 +17,7 @@ import {SearchFormComponent} from "../../search-form/search-form.component";
     MaterialModule,
     CarComponent,
     SearchFormComponent,
+    RouterModule,
   ],
   providers: [
     CarService,
@@ -23,28 +25,45 @@ import {SearchFormComponent} from "../../search-form/search-form.component";
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss'
 })
-export class SearchComponent {
+export class SearchComponent implements AfterViewInit {
 
   cars?: AutoDevApiCar[];
+  hasResults = false;
   hits: number | undefined;
   totalCount: number | undefined;
   isLoading = false;
   searchParams: any;
 
-  constructor(private carService: CarService) {
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  constructor(private carService: CarService, private router: Router, private route: ActivatedRoute) {
   }
 
-  search(searchParams: any, page: number) {
-    //append the page
-    this.searchParams = searchParams;
-    const params = { ...searchParams, 'page': page};
+  ngAfterViewInit() {
+    this.route.queryParams.subscribe(value => {
+      if (value['page']) {
+        this.paginator.pageIndex = value['page'] - 1;  // assuming page is 1-based
+      } else {
+        this.paginator.pageIndex = 0;
+      }
+    });
+  }
 
-    console.log('Searching with params:', params);
-    this.carService.getCars(params).subscribe(response => {
+  search(searchParams: any) {
+    console.log('Searching with params:', searchParams);
+
+    this.isLoading = true;
+    this.carService.getCars(searchParams).subscribe(response => {
       console.log('Filtered Search Results: ' , response.records);
       this.cars = response.records;
       this.hits = response.hitCounts;
       this.totalCount = response.totalCount;
+      this.searchParams = searchParams;
+      this.hasResults = true;
+      if (searchParams['page']) {
+        this.paginator.pageIndex = searchParams['page'] - 1;
+      }
       this.isLoading = false;
     });
   }
@@ -54,12 +73,20 @@ export class SearchComponent {
     this.hits = undefined;
     this.totalCount = undefined;
     this.isLoading = false;
+    this.hasResults = false;
     this.searchParams = {};
   }
 
-  page(event$: PageEvent) {
+  onPage(event$: PageEvent) {
     console.log('Page Event', event$);
-    this.isLoading = true;
-    this.search(this.searchParams, event$.pageIndex + 1);
+    this.searchParams['page'] = event$.pageIndex + 1;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: this.searchParams,
+      queryParamsHandling: 'merge'
+    }).then(() => {
+      this.search(this.searchParams);
+    });
   }
 }

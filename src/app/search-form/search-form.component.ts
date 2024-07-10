@@ -2,13 +2,9 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {MaterialModule} from "../material/material.module";
 import {carMakes, sortOptions} from "../models/search.model";
-import {map, Observable, startWith} from "rxjs";
+import {from, map, Observable, startWith} from "rxjs";
 import {CommonModule} from "@angular/common";
-
-interface SortOption {
-  value: string;
-  viewValue: string;
-}
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 
 @Component({
   selector: 'app-search-form',
@@ -17,13 +13,14 @@ interface SortOption {
     CommonModule,
     MaterialModule,
     ReactiveFormsModule,
+    RouterModule,
   ],
   templateUrl: './search-form.component.html',
   styleUrl: './search-form.component.scss'
 })
 export class SearchFormComponent implements OnInit {
   searchForm: FormGroup;
-  @Input() isLoading: boolean = false;
+  @Input() page: number = 1;
   @Output() submitEvent = new EventEmitter();
   @Output() clearEvent = new EventEmitter();
 
@@ -41,27 +38,36 @@ export class SearchFormComponent implements OnInit {
 
   make: FormControl;
 
-  constructor(private fb: FormBuilder) {
-    this.make = new FormControl("");
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute) {
+    this.make = new FormControl();
 
     this.searchForm = this.fb.group({
       make: this.make,
-      model: new FormControl(""),
-      color: new FormControl(""),
-      body_style: new FormControl(""),
-      price_min: new FormControl(this.minPrice),
-      price_max: new FormControl(this.maxPrice),
-      year_min: new FormControl(null),
-      mileage: new FormControl(null),
-      radius: new FormControl(null),
-      sort_filter: new FormControl(""),
+      model: new FormControl(),
+      color: new FormControl(),
+      body_style: new FormControl(),
+      price_min: new FormControl(),
+      price_max: new FormControl(),
+      year_min: new FormControl(),
+      mileage: new FormControl(),
+      radius: new FormControl(),
+      sort_filter: new FormControl(),
     });
   }
 
 
 
   ngOnInit() {
-    this.getLocation();
+    this.route.queryParams.subscribe(value => {
+      this.searchForm.patchValue(value);
+      console.log('queryParams', value);
+
+      from(this.getLocation()).subscribe(() => {
+        if (Object.keys(value).length !== 0) {
+          this.submitEvent.emit(this.searchParams);
+        }
+      });
+    });
 
     this.filteredMakes$ = this.make.valueChanges.pipe(
       startWith(''),
@@ -75,25 +81,30 @@ export class SearchFormComponent implements OnInit {
     return this.makes.filter(option => option.toLowerCase().includes(filterValue));
   }
 
-  getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-          if (position) {
-            this.latitude = position.coords.latitude;
-            this.longitude = position.coords.longitude;
-            this.locationError = undefined;
-          }
-        },
-        (error) => this.locationError = error);
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
+  getLocation(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            if (position) {
+              this.latitude = position.coords.latitude;
+              this.longitude = position.coords.longitude;
+              this.locationError = undefined;
+              console.log('Got Position', this.latitude, this.longitude);
+              resolve();
+            }
+          },
+          (error) => {
+            this.locationError = error
+            reject(error);
+          });
+      } else {
+        reject('Geolocation is not supported by this browser.');
+      }
+    });
   }
 
-  onSubmit() {
-    this.isLoading = true;
-
-    const searchParams = { ...this.searchForm?.value, 'latitude': this.latitude, 'longitude': this.longitude};
+  get searchParams() {
+    const searchParams = { ...this.searchForm?.value, 'latitude': this.latitude, 'longitude': this.longitude, 'page': this.page};
     Object.keys(searchParams).forEach(key => {
       if (searchParams[key] === null || searchParams[key] === undefined ||
         searchParams[key] === '' || searchParams[key] === 0) {
@@ -101,16 +112,29 @@ export class SearchFormComponent implements OnInit {
       }
     })
 
-    this.submitEvent.emit(searchParams);
+    return searchParams;
+  }
+
+  onSubmit() {
+    const params = this.searchParams;
+    params['page'] = 1;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: 'merge'
+    }).then(() => {
+      this.submitEvent.emit(params);
+    });
   }
 
   clearSearchForm() {
     this.searchForm.reset();
 
-    this.searchForm.get('price_min')?.setValue(this.minPrice)
-    this.searchForm.get('price_max')?.setValue(this.maxPrice)
-    this.searchForm.get('sort_filter')?.setValue("");
+    this.searchForm.get('price_min')?.setValue(this.minPrice);
+    this.searchForm.get('price_max')?.setValue(this.maxPrice);
 
+    this.router.navigate(['/search']);
     this.clearEvent.emit();
   }
 

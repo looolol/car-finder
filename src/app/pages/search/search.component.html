@@ -1,23 +1,23 @@
 <h2>Search Results:</h2>
 <hr>
 
-<app-search-form [isLoading]="isLoading" (submitEvent)="search($event, 1)" (clearEvent)="clear()"></app-search-form>
-
-<br/><br/>
+<app-search-form [page]="paginator.pageIndex + 1" (submitEvent)="search($event)" (clearEvent)="clear()"></app-search-form>
+<br/>
 
 <div class="searchResults">
-  @if (cars !== undefined) {
 
-    <mat-paginator [length]="totalCount"
-                   [pageSize]="20"
-                   (page)="page($event)"
-                   [disabled]="isLoading">
-    </mat-paginator>
+  <div class="loading-indicator" *ngIf="isLoading">Loading...</div>
+  <div class="loading-placeholder" *ngIf="!isLoading"></div>
+  <br/>
 
-    @if (isLoading) {
-    <p>Loading...</p>
-    }
+  <mat-paginator #paginator
+                 [length]="totalCount"
+                 [pageSize]="20"
+                 (page)="onPage($event)"
+                 [disabled]="isLoading">
+  </mat-paginator>
 
+  @if (hasResults) {
     @for (car of cars; track car) {
       <app-car [car]="car"></app-car>
     }

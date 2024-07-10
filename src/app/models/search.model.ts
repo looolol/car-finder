@@ -79,6 +79,10 @@ export const sortOptions = [
   { value: "created_at:desc", viewValue: "Oldest Listings" },
 ];
 
+export interface SortOption {
+  value: string;
+  viewValue: string;
+}
 
 export interface SearchParams {
   year_min: string,
