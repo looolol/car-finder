@@ -4,6 +4,8 @@ import {CarService} from "../../services/car.service";
 import {CarComponent} from "../../car/car.component";
 import {AutoDevApiCar} from "../../models/auto-dev.api-car.model";
 import {SearchFormComponent} from "../../search/search-form/search-form.component";
+import {MaterialModule} from "../../material/material.module";
+import {PageEvent} from "@angular/material/paginator";
 
 
 @Component({
@@ -11,6 +13,7 @@ import {SearchFormComponent} from "../../search/search-form/search-form.componen
   standalone: true,
   imports: [
     CommonModule,
+    MaterialModule,
     CarComponent,
     SearchFormComponent,
   ],
@@ -23,24 +26,40 @@ import {SearchFormComponent} from "../../search/search-form/search-form.componen
 export class SearchComponent {
 
   cars?: AutoDevApiCar[];
+  hits: number | undefined;
+  totalCount: number | undefined;
   isLoading = false;
+  searchParams: any;
 
   constructor(private carService: CarService) {
   }
 
-  search(searchParams: any) {
-    console.log('Searching with params:', searchParams);
+  search(searchParams: any, page: number) {
+    //append the page
+    this.searchParams = searchParams;
+    const params = { ...searchParams, 'page': page};
 
-    this.carService.getCars(searchParams).subscribe(cars => {
-      console.log('Filtered Search Results:', cars);
-      this.cars = cars;
+    console.log('Searching with params:', params);
+    this.carService.getCars(params).subscribe(response => {
+      console.log('Filtered Search Results: ' , response.records);
+      this.cars = response.records;
+      this.hits = response.hitCounts;
+      this.totalCount = response.totalCount;
       this.isLoading = false;
-    })
+    });
   }
 
   clear() {
     this.cars = undefined;
+    this.hits = undefined;
+    this.totalCount = undefined;
     this.isLoading = false;
+    this.searchParams = {};
   }
 
+  page(event$: PageEvent) {
+    console.log('Page Event', event$);
+    this.isLoading = true;
+    this.search(this.searchParams, event$.pageIndex + 1);
+  }
 }

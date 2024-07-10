@@ -6,6 +6,7 @@ import {MatCardModule} from "@angular/material/card";
 import {MatSelectModule} from "@angular/material/select";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatIconModule} from "@angular/material/icon";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 const ngModules = [
   MatInputModule,
@@ -15,6 +16,7 @@ const ngModules = [
   MatSelectModule,
   MatExpansionModule,
   MatIconModule,
+  MatPaginatorModule,
 ];
 
 @NgModule({
