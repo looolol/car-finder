@@ -1,29 +1,80 @@
 <div class="carListing">
+
   <mat-card appearance="outlined">
     <mat-card-header>
-      @if (car.thumbnailUrl) {
-      <img mat-card-avatar [src]="car.thumbnailUrl" alt="{{car.year}}-{{car.make}}-{{car.model}}">
-      }
+      <img mat-card-avatar [src]="car.thumbnailUrl">
       <mat-card-title>
-        <p>Vin: {{car.vin}}</p>
+        {{car.year}} {{car.make}} {{car.model}}
       </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p>Make: {{car.make}}</p>
-      <p>Model: {{car.model}}</p>
-      <p>Year: {{car.year}}</p>
-      <p>Body Style: {{car.bodyStyle}}</p>
-      <p>Color: {{car.displayColor}}</p>
-      <p>Mileage: {{car.mileageHumanized}}</p>
-      <p>Dealer: {{car.dealerName}}</p>
-      <p>Location: {{car.city}}, {{car.state}}</p>
-      <p>Distance: {{car.distanceFromOrigin}}</p>
-      <p><strong><u style="color: red;">{{car.price}}</u></strong></p>
-
-      @if (car.primaryPhotoUrl) {
-      <img [src]="car.primaryPhotoUrl" alt="{{car.year}}-{{car.make}}-{{car.model}}">
+      @if (car.isHot) {
+        <mat-icon class="hot" fontIcon="local_fire_department"></mat-icon>
       }
+      @if (car.recentPriceDrop) {
+        <mat-icon class="price-drop" fontIcon="trending_down"></mat-icon>
+      }
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <!-- Main Info -->
+      <p>{{car.mileage}}</p>
+      <p><strong><u style="color: red;">{{car.price}}</u></strong></p>
+      @if (car.clickoffUrl) {
+        <a [href]="clickoffUrl" target="_blank">Link to Dealer</a>
+      }
+
+      <div class="primary-photo-container">
+        <img class="primary-photo" [src]="car.primaryPhotoUrl">
+      </div>
+
+      <!-- Expanded Info -->
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Car Details</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <p>Vin: {{car.vin}}</p>
+          <p>Display Color: {{car.displayColor}}</p>
+          <p>Trim: {{car.trim}}</p>
+          <p>Body Style: {{car.bodyStyle}}</p>
+          <p>Condition: {{car.condition}}</p>
+
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Listing Details</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <p>Dealer: {{car.dealerName}}</p>
+          <p>Location: {{car.city}}, {{car.state}}</p>
+          <p>Distance: {{car.distanceFromOrigin}} Miles</p>
+          <p>Created At: {{car.createdAt | date: 'short'}}</p>
+          <p>Last Updated: {{car.updatedAt | date: 'short'}}</p>
+          <p>Active: {{car.active}}</p>
+
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Photos</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="carousel-container">
+            <mat-card class="carousel-card"
+                      *ngFor="let slide of car.photoUrls; let i = index"
+                      [ngClass]="{'active': i === currentSlideIndex}">
+              <img mat-card-image class="carousel-img" [src]="slide">
+            </mat-card>
+          </div>
+          <div class="carousel-buttons">
+            <button mat-raised-button (click)="prevSlide()">Previous</button>
+            <button mat-raised-button (click)="nextSlide()">Next</button>
+          </div>
+
+        </mat-expansion-panel>
+      </mat-accordion>
     </mat-card-content>
   </mat-card>
 </div>
-<br>
