@@ -17,6 +17,18 @@ export class CarComponent {
 
   @Input() car: AutoDevApiCar = {};
 
+  get clickoffUrl() {
+    const _clickoffUrl = this.car.clickoffUrl;
+
+    if (_clickoffUrl?.startsWith('http://') || _clickoffUrl?.startsWith('https://')) {
+      return _clickoffUrl;
+    } else if (_clickoffUrl?.startsWith('www.')) {
+      return 'https://${_clickoffUrl}';
+    }
+
+    return '';
+  }
+
   currentSlideIndex = 0;
 
   prevSlide() {
