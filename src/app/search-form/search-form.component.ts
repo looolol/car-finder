@@ -129,13 +129,7 @@ export class SearchFormComponent implements OnInit {
   }
 
   clearSearchForm() {
-    this.searchForm.reset();
-
-    this.searchForm.get('price_min')?.setValue(this.minPrice);
-    this.searchForm.get('price_max')?.setValue(this.maxPrice);
-
-    this.router.navigate(['/search']);
-    this.clearEvent.emit();
+    window.location.href = '/car-finder/search';
   }
 
   formatLabel(value: number): string {
