@@ -3,6 +3,7 @@ import {RouterOutlet} from '@angular/router';
 import {NavbarComponent} from "./navbar/navbar.component";
 import {HomeComponent} from "./pages/home/home.component";
 import {SearchComponent} from "./pages/search/search.component";
+import {VinLookupComponent} from "./pages/vin-lookup/vin-lookup.component";
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,7 @@ import {SearchComponent} from "./pages/search/search.component";
     NavbarComponent,
     HomeComponent,
     SearchComponent,
+    VinLookupComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

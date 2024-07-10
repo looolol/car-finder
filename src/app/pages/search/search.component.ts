@@ -3,9 +3,9 @@ import {CommonModule} from "@angular/common";
 import {CarService} from "../../services/car.service";
 import {CarComponent} from "../../car/car.component";
 import {AutoDevApiCar} from "../../models/auto-dev.api-car.model";
-import {SearchFormComponent} from "../../search/search-form/search-form.component";
 import {MaterialModule} from "../../material/material.module";
 import {PageEvent} from "@angular/material/paginator";
+import {SearchFormComponent} from "../../search-form/search-form.component";
 
 
 @Component({

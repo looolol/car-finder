@@ -1,7 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
-import {MaterialModule} from "../../material/material.module";
-import {autoDevSortOptions} from "../../models/auto-dev.request.model";
+import {MaterialModule} from "../material/material.module";
+import {carMakes, sortOptions} from "../models/search.model";
+import {map, Observable, startWith} from "rxjs";
+import {CommonModule} from "@angular/common";
 
 interface SortOption {
   value: string;
@@ -12,6 +14,7 @@ interface SortOption {
   selector: 'app-search-form',
   standalone: true,
   imports: [
+    CommonModule,
     MaterialModule,
     ReactiveFormsModule,
   ],
@@ -24,18 +27,25 @@ export class SearchFormComponent implements OnInit {
   @Output() submitEvent = new EventEmitter();
   @Output() clearEvent = new EventEmitter();
 
+  makes = carMakes;
+  filteredMakes$?: Observable<string[]>;
+
   minPrice = 0;
   maxPrice = 99999;
 
-  sortOptions = autoDevSortOptions;
+  sortOptions = sortOptions;
 
   latitude?: number;
   longitude?: number;
   locationError: GeolocationPositionError | undefined;
 
+  make: FormControl;
+
   constructor(private fb: FormBuilder) {
+    this.make = new FormControl("");
+
     this.searchForm = this.fb.group({
-      make: new FormControl(""),
+      make: this.make,
       model: new FormControl(""),
       color: new FormControl(""),
       body_style: new FormControl(""),
@@ -48,8 +58,21 @@ export class SearchFormComponent implements OnInit {
     });
   }
 
+
+
   ngOnInit() {
     this.getLocation();
+
+    this.filteredMakes$ = this.make.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || '')),
+    );
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.makes.filter(option => option.toLowerCase().includes(filterValue));
   }
 
   getLocation() {
