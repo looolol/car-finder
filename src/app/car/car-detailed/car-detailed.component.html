@@ -1,0 +1,146 @@
+<div class="car-details">
+  <ng-container *ngIf="car">
+    <mat-accordion>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Make</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <p>{{car.make.name}}</p>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Model</mat-panel-title>
+        </mat-expansion-panel-header>
+        <p>{{car.model.name}}</p>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Categories</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <p>Primary Body Type: {{car.categories.primaryBodyType}}</p>
+        <p>Market: {{car.categories.market}}</p>
+        <p>EPA Class: {{car.categories.epaClass}}</p>
+        <p>Vehicle Size: {{car.categories.vehicleSize}}</p>
+        <p>Vehicle Type: {{car.categories.vehicleType}}</p>
+        <p>Vehicle Style: {{car.categories.vehicleStyle}}</p>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Colors</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <ng-container *ngFor="let color of car.colors">
+          <mat-card>
+            <mat-card-content>
+              {{color.category}}
+              <ul>
+                  <li *ngFor="let option of color.options">{{option.name}}</li>
+              </ul>
+            </mat-card-content>
+          </mat-card>
+        </ng-container>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>MPG</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <p>Highway: {{car.mpg.highway}}mpg</p>
+        <p>City: {{car.mpg.city}}mpg</p>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Driven Wheels</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <p>{{car.drivenWheels}}</p>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Doors</mat-panel-title>
+        </mat-expansion-panel-header>
+        <p>{{car.numOfDoors}}</p>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Options</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <ng-container *ngFor="let options of car.options">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>{{options.category}}</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <mat-card *ngFor="let option of options.options" appearance="outlined">
+              <mat-card-header>
+                <mat-card-title>{{option.name}}</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p>Description: {{option.description}}</p>
+                <p>Availability: {{option.availability}}</p>
+              </mat-card-content>
+            </mat-card>
+          </mat-expansion-panel>
+
+        </ng-container>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>Engine</mat-panel-title>
+          </mat-expansion-panel-header>
+
+        <p>Cylinders: {{car.engine.cylinder}}</p>
+        <p>Fuel Type: {{car.engine.fuelType}}</p>
+        <p>Horsepower: {{car.engine.rpm.horsepower}}</p>
+        <p>Torque: {{car.engine.rpm.torque}}</p>
+        <p>Values: {{car.engine.totalValves}}</p>
+        <p>Type: {{car.engine.type}}</p>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Transmission</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <p>Name: {{car.transmission.name}}</p>
+        <p>Transmission: {{car.transmission.transmissionType}}</p>
+        <p>Speeds: {{car.transmission.numberOfSpeeds}}</p>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Years</mat-panel-title>
+        </mat-expansion-panel-header>
+
+
+        <ng-container *ngFor="let year of car.years">
+          <ng-container *ngFor="let style of year.styles">
+            <p>{{year.year}} {{style.name}}</p>
+          </ng-container>
+        </ng-container>
+
+
+      </mat-expansion-panel>
+    </mat-accordion>
+  </ng-container>
+</div>

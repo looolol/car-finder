@@ -7,6 +7,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatIconModule} from "@angular/material/icon";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 const ngModules = [
   MatInputModule,
@@ -17,6 +18,7 @@ const ngModules = [
   MatExpansionModule,
   MatIconModule,
   MatPaginatorModule,
+  MatAutocompleteModule,
 ];
 
 @NgModule({
