@@ -64,7 +64,7 @@ export interface AutoDevApiCar {
   availableNationwide?: boolean,
   regional?: boolean,
   thumbnailUrl?: string,
-  thumbnailUrlLarger?: string,
+  thumbnailUrlLarge?: string,
   quickPicksEligible?: boolean,
   dealerGroupUuid?: string,
   cplValue?: number,

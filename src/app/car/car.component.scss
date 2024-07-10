@@ -1,0 +1,96 @@
+.primary-photo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+.primary-photo {
+  max-width: 100%;
+  height: auto;
+}
+
+@media(max-width: 600px) {
+  .primary-photo {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+mat-card {
+  outline: black;
+  background-color: #add8e6;
+  margin: 15px 15px;
+}
+
+mat-icon {
+  width: 50px;
+  height: 50px;
+}
+
+mat-icon.hot {
+  color: red;
+}
+
+mat-icon.price-drop {
+  color: green;
+}
+
+.primary-photo {
+  display: block;
+  max-width: 500px;
+  max-height: 300px;
+  width: auto;
+  height: auto;
+  margin: 15px 15px;
+}
+
+
+.carousel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  flex-direction: column;
+}
+
+.carousel-card {
+  display: none;
+  width: 80%;
+  max-width: 800px;
+  max-height: 600px;
+  text-align: center;
+}
+
+.carousel-card.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-img {
+  width: 100%;
+  height: auto;
+}
+
+.carousel-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.carousel-buttons button {
+  margin: 0 10px;
+}
+
+button:nth-child(1) {
+  left: 0;
+}
+
+button:nth-child(3) {
+  right: 0;
+}

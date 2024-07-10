@@ -4,7 +4,8 @@ import {MatSliderModule} from "@angular/material/slider";
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {MatSelectModule} from "@angular/material/select";
-
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatIconModule} from "@angular/material/icon";
 
 const ngModules = [
   MatInputModule,
@@ -12,6 +13,8 @@ const ngModules = [
   MatSliderModule,
   MatCardModule,
   MatSelectModule,
+  MatExpansionModule,
+  MatIconModule,
 ];
 
 @NgModule({
